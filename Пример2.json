@@ -1,0 +1,5 @@
+[
+    {"amount": 1500, "category": "salary", "date": "2023-10-15 12:00:00"},
+    {"amount": -200, "category": "food", "date": "2023-10-15 12:05:00"},
+    {"amount": -500, "category": "transport", "date": "2023-10-15 12:10:00"}
+]
