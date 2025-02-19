@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Ваш баланс: {{ balance }}</h1>
+
+<h2>Статистика по категориям:</h2>
+<ul>
+	{% for category, total in stats.items() %}
+	<li>{{ category }}: {{ total }}</li>
+	{% endfor %}
+</ul>
+
+<h2>Добавить транзакцию:</h2>
+<form method="POST">
+	{{ form.hidden_tag() }}
+	<div>
+		{{ form.amount.label }} {{ form.amount() }}
+		{% if form.amount.errors %}
+		<ul>
+			{% for error in form.amount.errors %}
+			<li style="color: red;">{{ error }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+	</div>
+	<div>
+		{{ form.category.label }} {{ form.category() }}
+		{% if form.category.errors %}
+		<ul>
+			{% for error in form.category.errors %}
+			<li style="color: red;">{{ error }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+	</div>
+	<div>
+		{{ form.date.label }} {{ form.date() }}
+		{% if form.date.errors %}
+		<ul>
+			{% for error in form.date.errors %}
+			<li style="color: red;">{{ error }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+	</div>
+	<div>
+		{{ form.submit() }}
+	</div>
+</form>
+
+<h3>Статистика</h3>
+
+<div class="row">
+	<div class="col-md-6">
+		<h4>Доходы</h4>
+		<canvas id="incomeChart" width="400" height="400"></canvas>
+	</div>
+	<div class="col-md-6">
+		<h4>Расходы</h4>
+		<canvas id="expensesChart" width="400" height="400"></canvas>
+	</div>
+</div>
+
+<script>
+	// Данные для графика доходов
+	var incomeData = {
+		labels: {{ income.keys() | list | tojson }},
+	datasets: [{
+		data: {{ income.values() | list | tojson }},
+		backgroundColor: [
+		'rgba(75, 192, 192, 0.6)',
+		'rgba(54, 162, 235, 0.6)',
+		'rgba(153, 102, 255, 0.6)',
+		'rgba(255, 159, 64, 0.6)'
+	]
+		  }]
+	 };
+
+	// Данные для графика расходов
+	var expensesData = {
+		labels: {{ expenses.keys() | list | tojson }},
+	datasets: [{
+		data: {{ expenses.values() | list | tojson }},
+		backgroundColor: [
+		'rgba(255, 99, 132, 0.6)',
+		'rgba(255, 206, 86, 0.6)',
+		'rgba(75, 192, 192, 0.6)',
+		'rgba(153, 102, 255, 0.6)'
+	]
+		  }]
+	 };
+
+	// Создание графика доходов
+	var incomeCtx = document.getElementById('incomeChart').getContext('2d');
+	var incomeChart = new Chart(incomeCtx, {
+		type: 'pie',
+		data: incomeData
+	});
+
+	// Создание графика расходов
+	var expensesCtx = document.getElementById('expensesChart').getContext('2d');
+	var expensesChart = new Chart(expensesCtx, {
+		type: 'pie',
+		data: expensesData
+	});
+</script>
+
+{% endblock %}
